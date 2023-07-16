@@ -167,8 +167,8 @@ router.delete("/:id", async (req, res) => {
 module.exports = router;
 
 function getUserTokens(user, res) {
-  const accessToken = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: "2m" });
-  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "10m" });
+  const accessToken = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: "20m" });
+  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" }); 
 
   const userObj = user.toJSON();
   userObj["accessToken"] = accessToken;

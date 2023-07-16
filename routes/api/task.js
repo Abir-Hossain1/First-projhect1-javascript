@@ -9,7 +9,6 @@ const Task = require("../../model/Task");
 
 // ?Register a new user
 
-
 router.post(
   "/",
   [authenticationToken, [body("title", "Title is required").notEmpty()]],
@@ -37,6 +36,18 @@ router.post(
     }
   }
 );
+
+// ? Read all user
+router.get("/", authenticationToken, async (req, res) => {
+  try {
+    const id = req.user.id;
+    const task = await Task.find({ userId: id });
+    res.json(task);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ massage: "  users not found" });
+  }
+});
 
 router.post("/login", async (req, res) => {
   try {
@@ -98,17 +109,6 @@ router.get("/profile", authenticationToken, async (req, res) => {
   }
 });
 
-// ? Read all user
-router.get("/", async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.json(users);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ massage: "  users not found" });
-  }
-});
-
 // ? Read find one  ID from postman
 router.get("/:id", async (req, res) => {
   try {
@@ -162,8 +162,8 @@ router.delete("/:id", async (req, res) => {
 module.exports = router;
 
 function getUserTokens(user, res) {
-  const accessToken = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: "30m" });
-  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "30m" });
+  const accessToken = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: "20m" });
+  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "2d" });
 
   const userObj = user.toJSON();
   userObj["accessToken"] = accessToken;
