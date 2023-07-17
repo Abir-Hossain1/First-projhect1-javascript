@@ -105,7 +105,7 @@ router.get("/profile", authenticationToken, async (req, res) => {
 
 // ? Read all user
 router.get("/", async (req, res) => {
-  try {
+  try { 
     const users = await User.find({});
     res.json(users);
   } catch (error) {
@@ -167,8 +167,8 @@ router.delete("/:id", async (req, res) => {
 module.exports = router;
 
 function getUserTokens(user, res) {
-  const accessToken = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: "20m" });
-  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "1d" }); 
+  const accessToken = jwt.sign({ email: user.email, id: user.id }, process.env.JWT_SECRET, { expiresIn: "2d" });
+  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: "60d" }); 
 
   const userObj = user.toJSON();
   userObj["accessToken"] = accessToken;

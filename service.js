@@ -49,7 +49,7 @@ connectDB()
 
 // ?Routes
 app.use('/api/users', require('./routes/api/user')) 
-app.use('/api/task', require('./routes/api/task')) 
+app.use('/api/task', require('./routes/api/task'))  
 
 // ? check postman connection
 

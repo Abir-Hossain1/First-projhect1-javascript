@@ -37,17 +37,61 @@ router.post(
   }
 );
 
-// ? Read all user
+// ? get all task user by user
 router.get("/", authenticationToken, async (req, res) => {
-  try {
+  try {  
     const id = req.user.id;
     const task = await Task.find({ userId: id });
     res.json(task);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ massage: "  users not found" });
+    console.error(error);   
+    res.status(500).json({ massage: "  users not found" }); 
   }
 });
+
+
+// // ? status change
+
+// router.put("/status/:id", async (req, res) => {   
+//     try {
+//       const id = req.params.id;  
+//       const userId = req.user.id;
+  
+//      const status= req.body.status;
+  
+//       const task = await Task.findByIdAndUpdate({_id: id, userId: userId}, {status:status}, { new: true });    
+//       if (task) {
+//         res.json(task);  
+//       } else {
+//         res.status(404).json({ massage: " task not found" });
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ massage: " something is wrong" });
+//     }
+//   });
+
+// ? update User
+
+router.put("/:id",authenticationToken, async (req, res) => {   
+  try {
+    const id = req.params.id;  
+    const userId = req.user.id;
+
+   const body= req.body;
+
+    const task = await Task.findOneAndUpdate({_id: id, userId: userId}, body, { new: true });     
+    if (task) {
+      res.json(task);  
+    } else {
+      res.status(404).json({ massage: " task not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ massage: " something is wrong" });
+  }
+});
+
 
 router.post("/login", async (req, res) => {
   try {
@@ -55,7 +99,7 @@ router.post("/login", async (req, res) => {
     if (!type) {
       res.status(401).json({ massage: "  type not found" });
     } else {
-      if (type == "email") {
+      if (type == "email") { 
         const user = await User.findOne({ email: email });
         if (!user) {
           res.json({ massage: "user not found" });
@@ -125,23 +169,7 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// ? update User
 
-router.put("/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const body = req.body;
-    const user = await User.findByIdAndUpdate(id, body, { new: true });
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ massage: " user not found" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ massage: " something is wrong" });
-  }
-});
 
 // ? delete user
 router.delete("/:id", async (req, res) => {
