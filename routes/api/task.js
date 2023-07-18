@@ -55,10 +55,7 @@ router.put(
   "/status/:id",
   [
     authenticationToken,
-    [
-      body("status", "status is required").notEmpty(),
-      body("status", "status is invalid ").isIn(["to-do", "in-progress", "done"]),
-    ],
+    [body("status", "status is required").notEmpty(), body("status", "status is invalid ").isIn(["to-do", "in-progress", "done"])],
   ],
 
   async (req, res) => {
@@ -107,11 +104,28 @@ router.put("/:id", authenticationToken, async (req, res) => {
 });
 
 // ? user can see of his created task/get one user by id
-router.get("/:id",authenticationToken, async (req, res) => {
+router.get("/:id", authenticationToken, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const userId = req.user.id;
+    const task = await Task.findOne({ _id: id, userId: userId });
+    if (task) {
+      res.json(task);
+    } else {
+      res.status(404).json({ massage: " Task not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ massage: " something is wrong" });
+  }
+});
+
+// ? user can  delete one of his created task
+router.delete("/:id",authenticationToken, async (req, res) => {
   try {
     const id = req.params.id;
     const userId=req.user.id;
-    const task = await Task.findOne({_id:id,userId:userId});
+    const task = await Task.findByIdAndDelete({_id:id,userId:userId});
     if (task) {
       res.json(task);
     } else {
@@ -172,24 +186,6 @@ router.get("/profile", authenticationToken, async (req, res) => {
   try {
     const id = req.user.id;
     const user = await User.findById(id);
-    if (user) {
-      res.json(user);
-    } else {
-      res.status(404).json({ massage: " user not found" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ massage: " something is wrong" });
-  }
-});
-
-
-
-// ? delete user
-router.delete("/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const user = await User.findByIdAndDelete(id);
     if (user) {
       res.json(user);
     } else {
