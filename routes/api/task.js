@@ -50,26 +50,26 @@ router.get("/", authenticationToken, async (req, res) => {
 });
 
 
-// // ? status change
+// ? status change
 
-// router.put("/status/:id", async (req, res) => {   
-//     try {
-//       const id = req.params.id;  
-//       const userId = req.user.id;
+router.put("/status/:id",authenticationToken, async (req, res) => {   
+    try {
+      const id = req.params.id;  
+      const userId = req.user.id;
   
-//      const status= req.body.status;
+     const status= req.body.status;
   
-//       const task = await Task.findByIdAndUpdate({_id: id, userId: userId}, {status:status}, { new: true });    
-//       if (task) {
-//         res.json(task);  
-//       } else {
-//         res.status(404).json({ massage: " task not found" });
-//       }
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ massage: " something is wrong" });
-//     }
-//   });
+      const task = await Task.findByIdAndUpdate({_id: id, userId: userId}, {status:status}, { new: true });    
+      if (task) {
+        res.json(task);  
+      } else {
+        res.status(404).json({ massage: " task not found" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ massage: " something is wrong" });
+    }
+  });
 
 // ? update User Done
 
